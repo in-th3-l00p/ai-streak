@@ -1,10 +1,11 @@
-import { Container } from "@/components/container";
+import { Container } from "@/components/ui/container";
+import { Title } from "@/components/typography/title";
 
 export default function Home() {
   return (
     <main className="w-screen min-h-screen flex justify-center items-center">
       <Container>
-        <h1>Hello World</h1>
+        <Title>Hello World</Title>
       </Container>
     </main>
   );

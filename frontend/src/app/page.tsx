@@ -1,7 +1,15 @@
 import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Subtitle } from "@/components/typography/subtitle";
-import { Paragraph } from "@/components/typography/paragraph";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export default function Home() {
   return (
@@ -22,7 +30,7 @@ export default function Home() {
             <CardTitle>notes</CardTitle>
             <CardDescription>latest written notes</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-12">
+          <CardContent className="space-y-12 h-full flex flex-col">
             <div className="space-y-3 mt-6">
               <div className="text-sm font-light">2025-09-05</div>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
@@ -32,6 +40,23 @@ export default function Home() {
               <div className="text-sm font-light">2025-09-04</div>
               <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
             </div>
+
+            <Pagination className="mt-auto self-end">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </CardContent>
         </Card>
       </Container>

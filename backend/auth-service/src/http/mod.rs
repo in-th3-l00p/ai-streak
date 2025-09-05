@@ -3,6 +3,8 @@ pub mod routes;
 use crate::db;
 use axum::{Router, routing::get};
 use std::sync::Arc;
+use argon2::password_hash::rand_core::OsRng;
+use argon2::password_hash::SaltString;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use tokio::net::TcpListener;
@@ -11,6 +13,7 @@ use tokio::net::TcpListener;
 pub struct AppState {
     pub db: Arc<db::Database>,
     pub hmac: Hmac<Sha256>,
+    pub salt: SaltString,
 }
 
 pub fn app(db: Arc<db::Database>, secret: String) -> Router {
@@ -21,6 +24,7 @@ pub fn app(db: Arc<db::Database>, secret: String) -> Router {
             db,
             hmac: Hmac::new_from_slice(secret.as_bytes())
                 .expect("HMAC_SECRET is not valid"),
+            salt: SaltString::generate(&mut OsRng),
         })
 }
 

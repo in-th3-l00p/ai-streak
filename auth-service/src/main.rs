@@ -1,7 +1,6 @@
 mod http;
 
 use std::sync::Arc;
-
 use common::db;
 
 #[tokio::main]

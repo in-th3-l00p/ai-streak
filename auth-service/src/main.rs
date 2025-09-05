@@ -1,4 +1,4 @@
-use tokio::net::TcpListener;
+mod http;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -8,14 +8,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Result::Err(_) = dotenvy::dotenv() {
         tracing::warn!("error loading .env file");
     }
-    let port = std::env::var("PORT")
-        .unwrap_or_else(|_| "8080".to_string());
-    let listener = TcpListener::bind(format!("127.0.0.1:{}", port))
-        .await
-        .unwrap();
-    tracing::info!("server is running on port {}", port);
-    loop {
-        let (socket, _) = listener.accept().await.unwrap();
-        tracing::debug!("new connection: {}", socket.peer_addr().unwrap());
-    }
+
+    http::run().await
 }

@@ -1,5 +1,5 @@
-mod http;
 mod db;
+mod http;
 
 use std::sync::Arc;
 

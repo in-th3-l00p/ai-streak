@@ -1,8 +1,10 @@
+pub mod routes;
+
 use crate::db;
 use axum::{Router, routing::get};
+use std::sync::Arc;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
-use std::sync::Arc;
 use tokio::net::TcpListener;
 
 #[derive(Clone)]
@@ -12,11 +14,13 @@ pub struct AppState {
 }
 
 pub fn app(db: Arc<db::Database>, secret: String) -> Router {
-    Router::new()
+    Router::<AppState>::new()
         .route("/health", get(|| async { "OK" }))
+        .nest("/api", routes::router())
         .with_state(AppState {
             db,
-            hmac: Hmac::new_from_slice(secret.as_bytes()).expect("HMAC_SECRET is not valid"),
+            hmac: Hmac::new_from_slice(secret.as_bytes())
+                .expect("HMAC_SECRET is not valid"),
         })
 }
 

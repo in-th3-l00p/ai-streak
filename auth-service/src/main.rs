@@ -12,6 +12,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tracing::warn!("error loading .env file");
     }
 
-    let db = Arc::new(db::Database::new().await?);
-    http::run(db).await
+    match db::Database::new().await {
+        Ok(db) => {
+            let db = Arc::new(db);
+            http::run(db).await?;
+            Ok(())
+        }
+        Err(e) => {
+            tracing::error!("error connecting to database: {}", e);
+            Ok(())
+        }
+    }
 }

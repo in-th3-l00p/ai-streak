@@ -14,7 +14,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match db::Database::new().await {
         Ok(db) => {
-            tracing::info!("database connection started");
             let db = Arc::new(db);
             http::run(db).await?;
             Ok(())

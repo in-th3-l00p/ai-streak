@@ -45,7 +45,6 @@ dependencies = [
  "axum",
  "common",
  "dotenvy",
- "serde",
  "sqlx",
  "time",
  "tokio",

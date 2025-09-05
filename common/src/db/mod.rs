@@ -1,5 +1,3 @@
-pub mod domain;
-
 use sqlx::postgres::{PgPool, PgPoolOptions};
 
 pub struct Database {

@@ -10,7 +10,11 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(username: String, email: String, password: String) -> Self {
+    pub fn new(
+        username: String, 
+        email: String, 
+        password: String
+    ) -> Self {
         Self { 
             id: 0, 
             username, 

@@ -1,3 +1,26 @@
-fn main() {
-    println!("Hello, world!");
+mod http;
+
+use std::sync::Arc;
+use common::db;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
+    if let Result::Err(_) = dotenvy::dotenv() {
+        tracing::warn!("error loading .env file");
+    }
+
+    match db::Database::new().await {
+        Ok(db) => {
+            let db = Arc::new(db);
+            http::run(db).await?;
+            Ok(())
+        }
+        Err(e) => {
+            tracing::error!("error connecting to database: {}", e);
+            Ok(())
+        }
+    }
 }

@@ -1,8 +1,7 @@
-use std::sync::Arc;
-use axum::{debug_handler, Json};
+use crate::http::AppState;
 use axum::extract::State;
 use axum::http::StatusCode;
-use crate::http::AppState;
+use axum::{debug_handler, Json};
 
 #[debug_handler]
 pub async fn login(

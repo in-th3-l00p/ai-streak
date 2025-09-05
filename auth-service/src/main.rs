@@ -1,4 +1,7 @@
 mod http;
+mod db;
+
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -9,5 +12,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tracing::warn!("error loading .env file");
     }
 
-    http::run().await
+    let db = Arc::new(db::Database::new().await?);
+    http::run(db).await
 }

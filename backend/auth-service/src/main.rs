@@ -1,7 +1,7 @@
 mod http;
 
-use std::sync::Arc;
 use common::db;
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

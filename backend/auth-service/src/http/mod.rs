@@ -1,26 +1,32 @@
 use crate::db;
+use axum::{Router, routing::get};
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
 use std::sync::Arc;
-use axum::{routing::get, Router};
 use tokio::net::TcpListener;
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: Arc<db::Database>,
+    pub hmac: Hmac<Sha256>,
 }
 
-pub fn app(db: Arc<db::Database>) -> Router {
+pub fn app(db: Arc<db::Database>, secret: String) -> Router {
     Router::new()
         .route("/health", get(|| async { "OK" }))
-        .with_state(AppState { db })
+        .with_state(AppState {
+            db,
+            hmac: Hmac::new_from_slice(secret.as_bytes()).expect("HMAC_SECRET is not valid"),
+        })
 }
 
 pub async fn run(db: Arc<db::Database>) -> Result<(), Box<dyn std::error::Error>> {
     let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let secret = std::env::var("HMAC_SECRET").expect("HMAC_SECRET is not set");
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port))
         .await
         .unwrap();
     tracing::info!("auth service is running on port {}", port);
-    axum::serve(listener, app(db).into_make_service())
-        .await?;
+    axum::serve(listener, app(db, secret).into_make_service()).await?;
     Ok(())
 }

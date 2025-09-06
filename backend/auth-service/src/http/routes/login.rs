@@ -3,7 +3,7 @@ use axum::extract::State;
 use axum::http::StatusCode;
 use axum::{Json, debug_handler};
 use serde::Deserialize;
-use serde_json::json;
+use serde_json::{json, Value};
 
 #[derive(Deserialize)]
 pub struct UserLogin {
@@ -15,7 +15,7 @@ pub struct UserLogin {
 pub async fn login(
     State(app): State<AppState>,
     Json(body): Json<UserLogin>,
-) -> (StatusCode, Json<String>) {
+) -> (StatusCode, Json<Value>) {
     let user = app.user_service.login(
         body.username,
         body.password,
@@ -25,24 +25,24 @@ pub async fn login(
         Ok(user) => match app.auth_service.sign(&user) {
             Ok(jwt) => (
                 StatusCode::OK,
-                json!({ "jwt": jwt }).to_string().into()
+                Json(json!({ "jwt": jwt }))
             ),
             Err(err) => {
                 tracing::error!(
-                    "failed to create jwt for user: {:#?}. error: {}", 
-                    user, 
+                    "failed to create jwt for user: {:#?}. error: {}",
+                    user,
                     err.to_string()
                 );
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    json!({ "message": "internal server error" }).to_string().into()
+                    Json(json!({ "message": "internal server error" }))
                 )
             }
         }
         Err(err) => (
-            StatusCode::UNAUTHORIZED, 
-            json!({ "message": err.to_string() }).to_string().into()
+            StatusCode::UNAUTHORIZED,
+            Json(json!({ "message": err.to_string() }))
         ),
     }
-    
+
 }

@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 
-HOST="${API_HOST:-http://localhost}"
-PORT="${API_PORT:-8080}"
+host="${API_HOST:-http://localhost}"
+port="${API_PORT:-8080}"
 
-URL="$HOST:$PORT/api/login"
+url="$host:$port/api/login"
 
-echo "POST $URL"
-
-curl -s -X POST "$URL" \
+jwt=$(curl -s -X POST "$url" \
   -H "Content-Type: application/json" \
-  -d '{
-    "username": "intheloop",
-    "password": "password"
-  }'
-echo
+  -d '{ "username": "intheloop", "password": "password" }' \
+  | jq -r ".jwt")
+
+if [[ -z "$jwt" || "$jwt" == "null" ]]; then
+  echo "no jwt returned"
+  exit 1
+fi
+
+export JWT="$jwt"
+echo "jwt stored"

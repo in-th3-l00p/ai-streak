@@ -1,3 +1,5 @@
+pub mod seeding;
+
 use clap::{Parser};
 
 #[derive(clap::ValueEnum, Debug, Clone, Default)]

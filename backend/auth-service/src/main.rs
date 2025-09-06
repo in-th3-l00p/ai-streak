@@ -19,7 +19,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let ExecutionMode::Server = args.mode {
         app::run().await?;
     } else {
-        println!("hello world");
+        cli::seeding::seed().await;
     }
 
     Ok(())

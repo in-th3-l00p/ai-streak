@@ -15,7 +15,7 @@ pub struct UserService {
 
 impl UserService {
     pub fn new(pool: Arc<PgPool>, secret: Vec<u8>) -> Self {
-        Self { 
+        Self {
             pool,
             secret,
             salt: SaltString::generate(&mut OsRng),
@@ -42,12 +42,7 @@ impl UserService {
         ))
     }
 
-    pub async fn create(
-        self: &Self,
-        username: String,
-        email: String,
-        password: String,
-    ) -> anyhow::Result<User> {
+    fn hash_password(self: &Self, password: String) -> anyhow::Result<String> {
         let argon2 = Argon2::new_with_secret(
             self.secret.as_ref(),
             Algorithm::Argon2id,
@@ -55,11 +50,18 @@ impl UserService {
             Params::default()
         )
             .map_err(|err| anyhow!(err.to_string()))?;
-        let hashed = argon2
+        Ok(argon2
             .hash_password(password.as_ref(), self.salt.as_salt())
             .expect("failed to hash password")
-            .to_string();
+            .to_string())
+    }
 
+    pub async fn create(
+        self: &Self,
+        username: String,
+        email: String,
+        password: String,
+    ) -> anyhow::Result<User> {
         let record = sqlx::query!(
             r#"
                 insert into users (
@@ -74,11 +76,51 @@ impl UserService {
             "#,
             username,
             email,
-            hashed
+            self.hash_password(password)?
         )
             .fetch_one(self.pool.as_ref())
             .await?;
 
         self.read(record.id).await
+    }
+
+    pub async fn update(
+        self: &Self,
+        id: i32,
+        username: String,
+        email: String,
+        password: String,
+    ) -> anyhow::Result<User> {
+        sqlx::query!(
+            r#"
+                update users set
+                    username = $1,
+                    email = $2,
+                    password = $3,
+                    updated_at = now()
+                where id = $4
+            "#,
+            username,
+            email,
+            self.hash_password(password)?,
+            id
+        )
+            .execute(self.pool.as_ref())
+            .await?;
+
+        self.read(id).await
+    }
+
+    pub async fn delete(self: &Self, id: i32) -> anyhow::Result<()> {
+        sqlx::query!(
+            r#"
+                delete from users
+                where id = $1
+            "#,
+            id
+        )
+            .execute(self.pool.as_ref())
+            .await?;
+        Ok(())
     }
 }

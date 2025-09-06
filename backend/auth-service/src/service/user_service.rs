@@ -1,6 +1,6 @@
 use anyhow::anyhow;
-use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::SaltString;
+use argon2::password_hash::rand_core::OsRng;
 use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
 use common::domain::user::User;
 use sqlx::PgPool;
@@ -29,14 +29,14 @@ impl UserService {
             "#,
             id
         )
-            .fetch_one(self.pool.as_ref())
-            .await?;
+        .fetch_one(self.pool.as_ref())
+        .await?;
 
         Ok(User::new(
             record.id,
             record.username,
             record.email,
-            record.created_at.assume_utc()  ,
+            record.created_at.assume_utc(),
             record.updated_at.assume_utc(),
         ))
     }
@@ -46,9 +46,9 @@ impl UserService {
             self.secret.as_ref(),
             Algorithm::Argon2id,
             Version::V0x13,
-            Params::default()
+            Params::default(),
         )
-            .map_err(|err| anyhow!(err.to_string()))?;
+        .map_err(|err| anyhow!(err.to_string()))?;
         Ok(argon2
             .hash_password(password.as_ref(), self.salt.as_salt())
             .expect("failed to hash password")
@@ -77,8 +77,8 @@ impl UserService {
             email,
             self.hash_password(password)?
         )
-            .fetch_one(self.pool.as_ref())
-            .await?;
+        .fetch_one(self.pool.as_ref())
+        .await?;
 
         self.read(record.id).await
     }
@@ -104,8 +104,8 @@ impl UserService {
             self.hash_password(password)?,
             id
         )
-            .execute(self.pool.as_ref())
-            .await?;
+        .execute(self.pool.as_ref())
+        .await?;
 
         self.read(id).await
     }
@@ -118,8 +118,8 @@ impl UserService {
             "#,
             id
         )
-            .execute(self.pool.as_ref())
-            .await?;
+        .execute(self.pool.as_ref())
+        .await?;
         Ok(())
     }
 }

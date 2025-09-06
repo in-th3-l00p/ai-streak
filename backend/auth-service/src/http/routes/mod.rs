@@ -1,8 +1,11 @@
-pub mod login;
 mod current;
+pub mod login;
 
 use crate::app::AppState;
-use axum::{routing::{get, post}, Router};
+use axum::{
+    Router,
+    routing::{get, post},
+};
 
 pub fn router() -> Router<AppState> {
     Router::new()

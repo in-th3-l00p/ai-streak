@@ -1,7 +1,7 @@
 pub mod routes;
 
 use crate::app::AppState;
-use axum::{routing::get, Router};
+use axum::{Router, routing::get};
 use hmac::Mac;
 
 pub fn get_router(app_state: AppState) -> Router {

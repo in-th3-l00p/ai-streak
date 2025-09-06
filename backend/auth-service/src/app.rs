@@ -1,16 +1,17 @@
-use std::sync::Arc;
+use crate::http::get_router;
+use crate::service::auth_service::AuthService;
+use crate::service::user_service::UserService;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
+use std::sync::Arc;
 use tokio::net::TcpListener;
-use crate::http::get_router;
-use crate::service::user_service::UserService;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub hmac: Hmac<Sha256>,
-    pub user_service: Arc<UserService>
+    pub user_service: Arc<UserService>,
+    pub auth_service: Arc<AuthService>,
 }
 
 impl AppState {
@@ -32,24 +33,22 @@ impl AppState {
             .expect("HMAC_SECRET is not set")
             .into_bytes();
         Self {
-            hmac: Hmac::new_from_slice(&secret)
-                .expect("HMAC_SECRET is not valid"),
             user_service: Arc::new(UserService::new(pool, secret.clone())),
+            auth_service: Arc::new(AuthService::new(&secret)),
         }
     }
 }
 
-
 pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
-    let port = std::env::var("PORT")
-        .unwrap_or_else(|_| "8080".to_string());
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port))
         .await
         .unwrap();
     tracing::info!("auth service listening on port {}", port);
     axum::serve(
         listener,
-        get_router(AppState::new().await).into_make_service()
-    ).await?;
+        get_router(AppState::new().await).into_make_service(),
+    )
+    .await?;
     Ok(())
 }

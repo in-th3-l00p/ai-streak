@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use crate::app::AppState;
 use axum::extract::State;
 use axum::http::StatusCode;

@@ -1,8 +1,6 @@
 use std::sync::Arc;
-use argon2::password_hash::rand_core::OsRng;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
-use argon2::password_hash::SaltString;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use tokio::net::TcpListener;

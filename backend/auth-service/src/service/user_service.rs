@@ -6,7 +6,6 @@ use common::domain::user::User;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-#[derive(Clone)]
 pub struct UserService {
     pool: Arc<PgPool>,
     secret: Vec<u8>,

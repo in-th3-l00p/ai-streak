@@ -80,6 +80,7 @@ dependencies = [
  "dotenvy",
  "hmac",
  "jwt",
+ "serde_json",
  "sha2",
  "sqlx",
  "time",
@@ -252,8 +253,8 @@ checksum = "2fd1289c04a9ea8cb22300a459a72a385d7c73d3259e2ed7dcb2af674838cfa9"
 name = "common"
 version = "0.1.0"
 dependencies = [
+ "serde",
  "time",
- "tracing",
 ]
 
 [[package]]
@@ -329,6 +330,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d630bccd429a5bb5a64b5e94f693bfc48c9f8566418fda4c494cc94f911f87cc"
 dependencies = [
  "powerfmt",
+ "serde",
 ]
 
 [[package]]

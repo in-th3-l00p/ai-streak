@@ -1,8 +1,6 @@
 use crate::http::get_router;
 use crate::service::auth_service::AuthService;
 use crate::service::user_service::UserService;
-use hmac::{Hmac, Mac};
-use sha2::Sha256;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;

@@ -12,19 +12,22 @@ pub struct Note {
 
 impl Note {
     pub fn new(
+        id: i32,
         user_id: i32, 
         title: String, 
         content: String, 
-        is_public: bool
+        is_public: bool,
+        created_at: OffsetDateTime,
+        updated_at: OffsetDateTime
     ) -> Self {
         Self { 
-            id: 0, 
+            id, 
             user_id, 
             title, 
             content, 
             is_public, 
-            created_at: OffsetDateTime::now_utc(), 
-            updated_at: OffsetDateTime::now_utc() 
+            created_at, 
+            updated_at 
         }
     }
 }

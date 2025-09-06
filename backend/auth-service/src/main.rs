@@ -1,6 +1,10 @@
+use clap::Parser;
+use crate::cli::ExecutionMode;
+
 mod app;
 mod http;
 mod service;
+mod cli;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -11,6 +15,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         tracing::warn!("failed to load .env file");
     }
 
-    app::run().await?;
+    let args = cli::Args::parse();
+    if let ExecutionMode::Server = args.mode {
+        app::run().await?;
+    } else {
+        println!("hello world");
+    }
+
     Ok(())
 }

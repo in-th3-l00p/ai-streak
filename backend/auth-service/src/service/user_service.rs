@@ -1,7 +1,7 @@
 use anyhow::anyhow;
 use argon2::password_hash::SaltString;
 use argon2::password_hash::rand_core::OsRng;
-use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
+use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
 use common::domain::user::User;
 use sqlx::PgPool;
 use std::sync::Arc;
@@ -41,14 +41,57 @@ impl UserService {
         ))
     }
 
-    fn hash_password(self: &Self, password: String) -> anyhow::Result<String> {
-        let argon2 = Argon2::new_with_secret(
+    fn get_argon2(self: &Self) -> anyhow::Result<Argon2> {
+        Ok(Argon2::new_with_secret(
             self.secret.as_ref(),
             Algorithm::Argon2id,
             Version::V0x13,
             Params::default(),
         )
-        .map_err(|err| anyhow!(err.to_string()))?;
+            .map_err(|err| anyhow!(err.to_string()))?)
+    }
+
+    async fn read_login(
+        self: &Self,
+        username: String,
+        password: String
+    ) -> anyhow::Result<User> {
+        let argon2 = self.get_argon2()?;
+        let record = sqlx::query!(
+            r#"
+                select id, username, email, password, created_at, updated_at from users
+                where email = $1 or username = $1
+            "#,
+            username
+        )
+            .fetch_one(self.pool.as_ref())
+            .await?;
+        let hash = PasswordHash::new(&record.password)
+            .map_err(|err| anyhow!(err.to_string()))?;
+        argon2
+            .verify_password(password.as_bytes(), &hash)
+            .map_err(|err| anyhow!(err.to_string()))?;
+        Ok(User::new(
+            record.id,
+            record.username,
+            record.email,
+            record.created_at.assume_utc(),
+            record.updated_at.assume_utc(),
+        ))
+    }
+
+    pub async fn login(
+        self: &Self,
+        username: String,
+        password: String
+    ) -> anyhow::Result<User> {
+        self.read_login(username, password)
+            .await
+            .map_err(|_| anyhow!("wrong email or password"))
+    }
+
+    fn hash_password(self: &Self, password: String) -> anyhow::Result<String> {
+        let argon2 = self.get_argon2()?;
         Ok(argon2
             .hash_password(password.as_ref(), self.salt.as_salt())
             .expect("failed to hash password")

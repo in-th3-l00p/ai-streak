@@ -19,8 +19,8 @@ impl AuthService {
         }
     }
 
-    pub fn sign(self: &Self, user: User) -> anyhow::Result<String> {
-        Ok(BTreeMap::from([(USER_KEY.to_string(), serde_json::to_string(&user)?)])
+    pub fn sign(self: &Self, user: &User) -> anyhow::Result<String> {
+        Ok(BTreeMap::from([(USER_KEY.to_string(), serde_json::to_string(user)?)])
             .sign_with_key(&self.key)?)
     }
 

@@ -38,7 +38,8 @@ impl AppState {
 }
 
 pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
-    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let port = std::env::var("PORT")
+        .unwrap_or_else(|_| "8080".to_string());
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port))
         .await
         .unwrap();

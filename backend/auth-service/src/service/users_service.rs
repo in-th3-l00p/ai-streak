@@ -6,13 +6,13 @@ use common::domain::user::User;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-pub struct UserService {
+pub struct UsersService {
     pool: Arc<PgPool>,
     secret: Vec<u8>,
     salt: SaltString,
 }
 
-impl UserService {
+impl UsersService {
     pub fn new(pool: Arc<PgPool>, secret: Vec<u8>) -> Self {
         Self {
             pool,

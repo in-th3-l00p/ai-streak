@@ -1,6 +1,6 @@
 use crate::http::get_router;
 use crate::service::auth_service::AuthService;
-use crate::service::user_service::UserService;
+use crate::service::users_service::UsersService;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;
@@ -8,7 +8,7 @@ use tokio::net::TcpListener;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub user_service: Arc<UserService>,
+    pub user_service: Arc<UsersService>,
     pub auth_service: Arc<AuthService>,
 }
 
@@ -31,7 +31,7 @@ impl AppState {
             .expect("HMAC_SECRET is not set")
             .into_bytes();
         Self {
-            user_service: Arc::new(UserService::new(pool, secret.clone())),
+            user_service: Arc::new(UsersService::new(pool, secret.clone())),
             auth_service: Arc::new(AuthService::new(&secret)),
         }
     }

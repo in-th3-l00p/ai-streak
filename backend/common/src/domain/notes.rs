@@ -1,4 +1,4 @@
-use time::OffsetDateTime;
+use time::PrimitiveDateTime;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -8,8 +8,8 @@ pub struct Note {
     pub title: String,
     pub content: String,
     pub is_public: bool,
-    pub created_at: OffsetDateTime,
-    pub updated_at: OffsetDateTime,
+    pub created_at: PrimitiveDateTime,
+    pub updated_at: PrimitiveDateTime,
 }
 
 impl Note {
@@ -19,8 +19,8 @@ impl Note {
         title: String,
         content: String,
         is_public: bool,
-        created_at: OffsetDateTime,
-        updated_at: OffsetDateTime
+        created_at: PrimitiveDateTime,
+        updated_at: PrimitiveDateTime,
     ) -> Self {
         Self {
             id,

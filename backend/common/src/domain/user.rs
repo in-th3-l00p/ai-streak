@@ -1,4 +1,4 @@
-use time::OffsetDateTime;
+use time::PrimitiveDateTime;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -6,8 +6,8 @@ pub struct User {
     pub id: i32,
     pub username: String,
     pub email: String,
-    pub created_at: OffsetDateTime,
-    pub updated_at: OffsetDateTime,
+    pub created_at: PrimitiveDateTime,
+    pub updated_at: PrimitiveDateTime,
 }
 
 impl User {
@@ -15,8 +15,8 @@ impl User {
         id: i32,
         username: String, 
         email: String, 
-        created_at: OffsetDateTime,
-        updated_at: OffsetDateTime
+        created_at: PrimitiveDateTime,
+        updated_at: PrimitiveDateTime
     ) -> Self {
         Self { 
             id, 

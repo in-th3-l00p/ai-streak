@@ -36,8 +36,8 @@ impl UsersService {
             record.id,
             record.username,
             record.email,
-            record.created_at.assume_utc(),
-            record.updated_at.assume_utc(),
+            record.created_at,
+            record.updated_at,
         ))
     }
 
@@ -75,8 +75,8 @@ impl UsersService {
             record.id,
             record.username,
             record.email,
-            record.created_at.assume_utc(),
-            record.updated_at.assume_utc(),
+            record.created_at,
+            record.updated_at,
         ))
     }
 

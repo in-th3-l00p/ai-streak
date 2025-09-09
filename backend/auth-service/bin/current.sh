@@ -4,7 +4,7 @@ set -euo pipefail
 HOST="${API_HOST:-http://localhost}"
 PORT="${API_PORT:-8080}"
 
-URL="$HOST:$PORT/api/current"
+URL="$HOST:$PORT/api/auth/current"
 
 if [[ -z "${JWT:-}" ]]; then
   echo "jwt not found"

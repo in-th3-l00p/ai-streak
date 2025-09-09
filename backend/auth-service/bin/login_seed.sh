@@ -3,7 +3,7 @@
 host="${API_HOST:-http://localhost}"
 port="${API_PORT:-8080}"
 
-url="$host:$port/api/login"
+url="$host:$port/api/auth/login"
 
 jwt=$(curl -s -X POST "$url" \
   -H "Content-Type: application/json" \

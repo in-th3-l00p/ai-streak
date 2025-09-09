@@ -7,7 +7,7 @@ pub struct Note {
     pub user_id: i32,
     pub title: String,
     pub content: String,
-    pub is_public: bool,        
+    pub is_public: bool,
     pub created_at: OffsetDateTime,
     pub updated_at: OffsetDateTime,
 }
@@ -15,21 +15,21 @@ pub struct Note {
 impl Note {
     pub fn new(
         id: i32,
-        user_id: i32, 
-        title: String, 
-        content: String, 
+        user_id: i32,
+        title: String,
+        content: String,
         is_public: bool,
         created_at: OffsetDateTime,
         updated_at: OffsetDateTime
     ) -> Self {
-        Self { 
-            id, 
-            user_id, 
-            title, 
-            content, 
-            is_public, 
-            created_at, 
-            updated_at 
+        Self {
+            id,
+            user_id,
+            title,
+            content,
+            is_public,
+            created_at,
+            updated_at
         }
     }
 }

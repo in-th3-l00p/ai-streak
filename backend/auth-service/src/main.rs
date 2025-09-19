@@ -5,6 +5,7 @@ mod app;
 mod http;
 mod service;
 mod cli;
+mod streaming;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
